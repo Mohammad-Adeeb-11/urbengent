@@ -25,6 +25,7 @@ import Profile from "./pages/account/Profile";
 import Orders from "./pages/account/Orders";
 import WishlistPage from "./pages/account/Wishlist";
 import Addresses from "./pages/account/Addresses";
+import AccountOverview from "./pages/account/Overview";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
@@ -35,6 +36,7 @@ import AdminProducts from "./admin/AdminProducts";
 import AdminCreateProduct from "./admin/AdminCreateProduct";
 import AdminEditProduct from "./admin/AdminEditProduct";
 import AdminUsers from "./admin/AdminUsers";
+import AdminOrders from "./admin/AdminOrders";
 
 function App() {
   return (
@@ -116,6 +118,7 @@ function AppShell() {
               </ProtectedRoute>
             }
           >
+              <Route index element={<AccountOverview />} />
             <Route path="profile" element={<Profile />} />
             <Route path="orders" element={<Orders />} />
             <Route path="wishlist" element={<WishlistPage />} />
@@ -136,6 +139,7 @@ function AppShell() {
             <Route path="create-product" element={<AdminCreateProduct />} />
             <Route path="product/:id/edit" element={<AdminEditProduct />} />
             <Route path="users" element={<AdminUsers />} />
+              <Route path="orders" element={<AdminOrders />} />
           </Route>
         </Routes>
       </div>

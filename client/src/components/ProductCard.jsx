@@ -1,114 +1,39 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import { FiHeart } from "react-icons/fi";
+import { Heart, LoaderCircle, Star } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function ProductCard({ product }) {
   const [wishLoading, setWishLoading] = useState(false);
+  const discount = product.oldPrice && Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
 
-  const addToWishlist = async (productId) => {
+  const addToWishlist = async () => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
     if (!userInfo?.token) {
-      localStorage.removeItem("userInfo");
       alert("Please login first");
       return;
     }
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-
+    setWishLoading(true);
     try {
-      setWishLoading(true);
-
-      await axios.post(
-        "http://localhost:5000/api/wishlist",
-        { productId },
-        config,
-      );
-
-      alert("Added to wishlist ❤️");
+      await axios.post("http://localhost:5000/api/wishlist", { productId: product._id }, { headers: { Authorization: `Bearer ${userInfo.token}` } });
+      alert("Added to wishlist");
     } catch (error) {
-      console.log(error);
+      alert(error.response?.data?.message || "Could not add to wishlist");
     } finally {
       setWishLoading(false);
     }
   };
 
-  const discount =
-    product.oldPrice &&
-    Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
-
   return (
-    <div className="group bg-white rounded-lg overflow-hidden shadow hover:shadow-xl transition duration-300 flex flex-col">
-      {/* IMAGE */}
-      <div className="relative overflow-hidden">
-        <Link to={`/product/${product._id}`}>
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-[220px] sm:h-[260px] md:h-[300px] lg:h-[320px] object-cover transition duration-500 group-hover:scale-105"
-          />
-        </Link>
-
-        {/* WISHLIST */}
-        <button
-          onClick={() => addToWishlist(product._id)}
-          className="absolute top-3 right-3 bg-white w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center shadow hover:bg-gray-100 transition"
-        >
-          <FiHeart size={18} />
-        </button>
+    <article className="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <div className="relative aspect-[1/1.12] overflow-hidden bg-slate-100">
+        <Link to={`/product/${product._id}`}><img src={product.image} alt={product.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /></Link>
+        {discount > 0 && <span className="absolute left-2.5 top-2.5 rounded-full bg-[#16283f] px-2 py-1 text-[9px] font-semibold text-white">-{discount}%</span>}
+        <button onClick={addToWishlist} disabled={wishLoading} aria-label="Add to wishlist" className="absolute right-2.5 top-2.5 rounded-full bg-white p-2 text-[#16283f] shadow-md transition hover:bg-[#e9b872] disabled:opacity-60">{wishLoading ? <LoaderCircle className="animate-spin" size={16} /> : <Heart size={16} />}</button>
       </div>
-
-      {/* PRODUCT INFO */}
-      <div className="p-3 md:p-4 flex flex-col flex-grow">
-        {/* NAME */}
-        <Link to={`/product/${product._id}`}>
-          <h3 className="text-sm md:text-base font-semibold text-[#2E4A7D] line-clamp-2 hover:underline">
-            {product.name}
-          </h3>
-        </Link>
-
-        {/* RATING */}
-        <div className="flex items-center text-yellow-500 text-xs md:text-sm mt-1">
-          {"★".repeat(Math.round(product.rating || 0))}
-          {"☆".repeat(5 - Math.round(product.rating || 0))}
-
-          <span className="ml-2 text-gray-500">
-            ({product.numReviews || 0})
-          </span>
-        </div>
-
-        {/* SIZES */}
-        <div className="hidden md:block h-6 mt-2">
-          <p className="text-sm text-gray-500 opacity-0 group-hover:opacity-100 transition">
-            Sizes: S | M | L | XL
-          </p>
-        </div>
-
-        {/* PRICE */}
-        <div className="mt-2 flex items-center gap-2 flex-wrap">
-          <span className="text-base md:text-lg font-bold text-[#2E4A7D]">
-            ₹{product.price}
-          </span>
-
-          {product.oldPrice && (
-            <>
-              <span className="text-gray-400 line-through text-sm">
-                ₹{product.oldPrice}
-              </span>
-
-              <span className="text-green-600 text-xs md:text-sm font-medium">
-                {discount}% OFF
-              </span>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
+      <div className="p-3"><div className="flex items-center justify-between gap-2"><p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-400">{product.category}</p><span className="flex items-center gap-1 text-[11px] text-[#b77a2e]"><Star size={11} fill="currentColor" /> {Number(product.rating || 0).toFixed(1)}</span></div><Link to={`/product/${product._id}`}><h3 className="mt-1.5 line-clamp-2 min-h-9 text-sm font-semibold leading-5 text-[#16283f] hover:text-[#b77a2e]">{product.name}</h3></Link><div className="mt-2.5 flex items-center gap-2"><span className="text-sm font-semibold text-[#16283f]">₹{product.price}</span>{product.oldPrice && <span className="text-[11px] text-slate-400 line-through">₹{product.oldPrice}</span>}</div></div>
+    </article>
   );
 }
 

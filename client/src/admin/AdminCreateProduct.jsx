@@ -39,6 +39,7 @@ function AdminCreateProduct() {
       const { data } = await axios.post(
         "http://localhost:5000/api/upload",
         formData,
+        { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );
       setForm((current) => ({ ...current, image: data.imageUrl }));
     } catch {

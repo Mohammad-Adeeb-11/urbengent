@@ -97,6 +97,7 @@ export const updateProduct = async (req, res) => {
     product.oldPrice = req.body.oldPrice;
     product.image = req.body.image;
     product.description = req.body.description;
+    product.category = req.body.category || product.category;
 
     const updatedProduct = await product.save();
 

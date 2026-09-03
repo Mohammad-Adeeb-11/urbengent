@@ -44,6 +44,7 @@ function AdminEditProduct() {
       const { data } = await axios.post(
         "http://localhost:5000/api/upload",
         formData,
+        { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );
 
       setImage(data.imageUrl);

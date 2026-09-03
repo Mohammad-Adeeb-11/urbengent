@@ -1,11 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { createElement } from "react";
-import { BarChart3, Box, Plus, Users } from "lucide-react";
+import { BarChart3, Box, ClipboardList, Plus, Users } from "lucide-react";
 
 function AdminSidebar({ closeSidebar, mobile = false }) {
   const links = [
     { to: "/admin", label: "Overview", icon: BarChart3, end: true },
     { to: "/admin/products", label: "Products", icon: Box },
+    { to: "/admin/orders", label: "Orders", icon: ClipboardList },
     { to: "/admin/create-product", label: "Add product", icon: Plus },
     { to: "/admin/users", label: "Users", icon: Users },
   ];

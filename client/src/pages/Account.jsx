@@ -1,90 +1,16 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { createElement } from "react";
+import { Link, NavLink, Outlet } from "react-router-dom";
+import { Heart, MapPin, Package, UserRound } from "lucide-react";
 
 function Account() {
-  const location = useLocation();
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
   const menu = [
-    { name: "Profile", path: "/account/profile" },
-    { name: "Orders", path: "/account/orders" },
-    { name: "Wishlist", path: "/account/wishlist" },
-    { name: "Addresses", path: "/account/addresses" },
+    { name: "Overview", path: "/account", icon: UserRound, end: true },
+    { name: "Profile", path: "/account/profile", icon: UserRound },
+    { name: "Orders", path: "/account/orders", icon: Package },
+    { name: "Wishlist", path: "/account/wishlist", icon: Heart },
+    { name: "Addresses", path: "/account/addresses", icon: MapPin },
   ];
-
-  return (
-    <div className="px-4 md:px-20 py-10 bg-gray-50 min-h-screen">
-      <div className="max-w-6xl mx-auto">
-        {/* PROFILE HEADER */}
-        <div className="bg-white shadow rounded-lg p-6 mb-8 flex items-center gap-4">
-          <div className="w-14 h-14 bg-[#2E4A7D] text-white flex items-center justify-center rounded-full text-xl font-semibold">
-            {userInfo?.name?.charAt(0)}
-          </div>
-
-          <div>
-            <h2 className="text-lg md:text-xl font-semibold text-[#2E4A7D]">
-              {userInfo?.name}
-            </h2>
-
-            <p className="text-gray-600 text-sm">{userInfo?.email}</p>
-
-            <p className="text-gray-400 text-xs">
-              Member since {new Date().getFullYear()}
-            </p>
-          </div>
-        </div>
-
-        {/* MOBILE MENU (Tabs) */}
-        <div className="md:hidden mb-6 overflow-x-auto">
-          <div className="flex gap-3">
-            {menu.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`px-4 py-2 rounded-md whitespace-nowrap text-sm ${
-                  location.pathname === item.path
-                    ? "bg-[#2E4A7D] text-white"
-                    : "bg-white border"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* DESKTOP LAYOUT */}
-        <div className="grid md:grid-cols-[250px_1fr] gap-8">
-          {/* SIDEBAR */}
-          <div className="hidden md:block bg-white rounded-lg shadow p-6 h-fit">
-            <h3 className="text-lg font-semibold text-[#2E4A7D] mb-6">
-              My Account
-            </h3>
-
-            <ul className="space-y-3">
-              {menu.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`block px-4 py-3 rounded-md transition ${
-                    location.pathname === item.path
-                      ? "bg-[#2E4A7D] text-white"
-                      : "hover:bg-gray-100"
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </ul>
-          </div>
-
-          {/* CONTENT AREA */}
-          <div className="bg-white rounded-lg shadow p-5 md:p-8">
-            <Outlet />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return <main className="bg-[#f8fafb] px-4 py-10 sm:px-8 lg:px-16 lg:py-14"><div className="mx-auto max-w-6xl"><header className="relative overflow-hidden rounded-2xl bg-[#16283f] px-6 py-7 text-white shadow-lg sm:px-8"><div className="relative z-10"><p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#e9b872]">Your account</p><div className="mt-4 flex items-center gap-4"><div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-[#e9b872] text-xl font-semibold text-[#16283f]">{userInfo?.avatar ? <img src={userInfo.avatar} alt="Profile" className="h-full w-full object-cover" /> : userInfo?.name?.charAt(0)?.toUpperCase()}</div><div><h1 className="text-2xl font-semibold">{userInfo?.name || "Welcome back"}</h1><p className="mt-1 text-sm text-slate-300">{userInfo?.email}</p></div></div></div><div className="absolute -right-12 -top-20 h-56 w-56 rounded-full border-[28px] border-[#b77a2e]/20" /></header><div className="mt-6 grid gap-6 md:grid-cols-[220px_1fr]"><nav className="h-fit rounded-xl border border-slate-200 bg-white p-3 shadow-sm">{menu.map(({ name, path, icon: Icon, end }) => <NavLink key={path} to={path} end={end} className={({ isActive }) => `flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition ${isActive ? "bg-[#16283f] text-white" : "text-slate-600 hover:bg-slate-50"}`}>{createElement(Icon, { size: 17 })}{name}</NavLink>)}</nav><section className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8"><Outlet /></section></div></div></main>;
 }
-
 export default Account;
