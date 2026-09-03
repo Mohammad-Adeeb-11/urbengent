@@ -1,5 +1,16 @@
 import axios from "axios";
 
+const localApiUrl = "http://localhost:5000";
+const apiUrl = (import.meta.env.VITE_API_URL || localApiUrl).replace(/\/$/, "");
+
+axios.interceptors.request.use((config) => {
+  if (config.url?.startsWith(localApiUrl)) {
+    config.url = `${apiUrl}${config.url.slice(localApiUrl.length)}`;
+  }
+
+  return config;
+});
+
 axios.interceptors.response.use(
   (response) => response,
   (error) => {

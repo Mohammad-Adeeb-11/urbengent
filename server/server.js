@@ -14,15 +14,30 @@ import orderRoutes from "./routes/orderRoutes.js";
 dotenv.config();
 
 const app = express();
+const port = Number(process.env.PORT) || 5000;
+const clientUrls = (process.env.CLIENT_URL || "http://localhost:5173")
+  .split(",")
+  .map((url) => url.trim())
+  .filter(Boolean);
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: (origin, callback) => {
+      if (!origin || clientUrls.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Origin is not allowed by CORS"));
+    },
     credentials: true,
   }),
 );
 
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
+
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
 
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
@@ -32,15 +47,13 @@ app.use("/api/upload", uploadRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/orders", orderRoutes);
 
-const PORT = 5000;
-
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected");
 
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
     });
   })
   .catch((err) => {
