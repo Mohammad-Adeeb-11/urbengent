@@ -27,7 +27,9 @@ function AdminLayout() {
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#b77a2e]">
                 UrbanGent
               </p>
-              <h1 className="text-lg font-semibold text-[#16283f]">Admin workspace</h1>
+              <h1 className="text-lg font-semibold text-[#16283f]">
+                Admin workspace
+              </h1>
             </div>
 
             <button
@@ -52,7 +54,9 @@ function AdminLayout() {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#b77a2e]">
               Control center
             </p>
-            <p className="mt-1 text-sm text-slate-500">Manage your store in one place.</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Manage your store in one place.
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <a

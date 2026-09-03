@@ -27,7 +27,9 @@ body {
   font-size: 0.875rem;
   color: #16283f;
   outline: none;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
 }
 
 .input-style::placeholder {
