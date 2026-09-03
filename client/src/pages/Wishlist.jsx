@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { Heart, LoaderCircle, ShoppingCart, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -13,7 +13,7 @@ function Wishlist() {
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5000/api/wishlist", {
+        const { data } = await axios.get("/api/wishlist", {
           headers,
         });
         setWishlist(data.products || []);
@@ -26,7 +26,7 @@ function Wishlist() {
   const removeFromWishlist = async (id) => {
     setActionId(id);
     try {
-      await axios.delete(`http://localhost:5000/api/wishlist/${id}`, {
+      await axios.delete(`/api/wishlist/${id}`, {
         headers,
       });
       setWishlist((items) => items.filter((product) => product._id !== id));
@@ -38,7 +38,7 @@ function Wishlist() {
     setActionId(id);
     try {
       await axios.post(
-        "http://localhost:5000/api/cart",
+        "/api/cart",
         { productId: id, quantity: 1 },
         { headers },
       );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import {
   ArrowRight,
   CheckCircle2,
@@ -34,7 +34,7 @@ function Cart() {
 
   const fetchCart = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/cart", {
+      const { data } = await axios.get("/api/cart", {
         headers,
       });
       setCart(data);
@@ -49,7 +49,7 @@ function Cart() {
     setUpdating(productId);
     try {
       await axios.put(
-        "http://localhost:5000/api/cart/update",
+        "/api/cart/update",
         { productId, quantity },
         { headers },
       );
@@ -61,7 +61,7 @@ function Cart() {
   const removeItem = async (productId) => {
     setUpdating(productId);
     try {
-      await axios.delete("http://localhost:5000/api/cart/remove", {
+      await axios.delete("/api/cart/remove", {
         data: { productId },
         headers,
       });
@@ -86,7 +86,7 @@ function Cart() {
     setError("");
     try {
       await axios.post(
-        "http://localhost:5000/api/orders",
+        "/api/orders",
         { shippingAddress: address, paymentMethod: "COD" },
         { headers },
       );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import {
   Heart,
   LogIn,
@@ -34,8 +34,8 @@ function Navbar() {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
       try {
         const [cartResponse, wishlistResponse] = await Promise.all([
-          axios.get("http://localhost:5000/api/cart", config),
-          axios.get("http://localhost:5000/api/wishlist", config),
+          axios.get("/api/cart", config),
+          axios.get("/api/wishlist", config),
         ]);
         setCartCount(
           (cartResponse.data.items || []).reduce(

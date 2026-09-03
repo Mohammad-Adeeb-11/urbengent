@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios";
 import {
   Check,
   Edit3,
@@ -34,7 +34,7 @@ function Addresses() {
     const fetchAddresses = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:5000/api/users/addresses",
+          "/api/users/addresses",
           { headers },
         );
         setAddresses(data);
@@ -66,8 +66,8 @@ function Addresses() {
     setMessage("");
     try {
       const url = editingId
-        ? `http://localhost:5000/api/users/addresses/${editingId}`
-        : "http://localhost:5000/api/users/addresses";
+        ? `/api/users/addresses/${editingId}`
+        : "/api/users/addresses";
       const { data } = await axios({
         method: editingId ? "put" : "post",
         url,
@@ -90,7 +90,7 @@ function Addresses() {
   };
   const deleteAddress = async (id) => {
     if (!window.confirm("Remove this address?")) return;
-    await axios.delete(`http://localhost:5000/api/users/addresses/${id}`, {
+    await axios.delete(`/api/users/addresses/${id}`, {
       headers,
     });
     setAddresses((current) => current.filter((item) => item._id !== id));

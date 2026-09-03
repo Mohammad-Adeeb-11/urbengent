@@ -1,5 +1,5 @@
 import { createElement, useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import {
   ArrowUpRight,
   BarChart3,
@@ -40,8 +40,8 @@ function AdminDashboard() {
       try {
         const config = { headers: { Authorization: `Bearer ${token}` } };
         const [usersRes, productsRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/users", config),
-          axios.get("http://localhost:5000/api/products"),
+          axios.get("/api/users", config),
+          axios.get("/api/products"),
         ]);
 
         setUsers(usersRes.data);

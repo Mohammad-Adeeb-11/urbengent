@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function VerifyOtp() {
@@ -26,10 +26,10 @@ function VerifyOtp() {
     const finalOtp = otp.join("");
 
     try {
-      const { data } = await axios.post(
-        "http://localhost:5000/api/otp/verify",
-        { email, otp: finalOtp },
-      );
+      const { data } = await axios.post("/api/otp/verify", {
+        email,
+        otp: finalOtp,
+      });
 
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/welcome", { state: { userId: data._id } });

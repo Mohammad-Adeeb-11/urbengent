@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -18,7 +18,7 @@ function Login() {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:5000/api/otp/send", { email });
+      await axios.post("/api/otp/send", { email });
 
       navigate("/verify", { state: { email } });
     } catch (error) {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { Heart, LoaderCircle, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -19,7 +19,7 @@ function ProductCard({ product }) {
     setWishLoading(true);
     try {
       await axios.post(
-        "http://localhost:5000/api/wishlist",
+        "/api/wishlist",
         { productId: product._id },
         { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );

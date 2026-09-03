@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { FiShoppingBag, FiHeart } from "react-icons/fi";
 
 function ProductDetails() {
@@ -17,7 +17,7 @@ function ProductDetails() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/products/${id}`)
+      .get(`/api/products/${id}`)
       .then((res) => setProduct(res.data))
       .catch((err) => console.log(err));
   }, [id]);
@@ -41,7 +41,7 @@ function ProductDetails() {
       };
 
       await axios.post(
-        "http://localhost:5000/api/cart",
+        "/api/cart",
         {
           productId: id,
           quantity,
@@ -76,7 +76,7 @@ function ProductDetails() {
       };
 
       await axios.post(
-        `http://localhost:5000/api/products/${id}/reviews`,
+        `/api/products/${id}/reviews`,
         { rating, comment },
         config,
       );

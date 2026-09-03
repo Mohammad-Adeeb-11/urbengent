@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import ProductCard from "./ProductCard";
 
 function FeaturedProducts() {
@@ -10,7 +10,7 @@ function FeaturedProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/products");
+        const res = await axios.get("/api/products");
         setProducts(res.data);
       } catch (err) {
         setError("Failed to load products.");

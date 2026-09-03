@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios";
 import { CheckCircle2, Clock3, Package, Truck } from "lucide-react";
 
 const statusIcons = {
@@ -19,7 +19,7 @@ function Orders() {
     const fetchOrders = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:5000/api/orders/mine",
+          "/api/orders/mine",
           { headers: { Authorization: `Bearer ${userInfo?.token}` } },
         );
         setOrders(data);

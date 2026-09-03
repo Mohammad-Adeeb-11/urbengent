@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import {
   BarChart,
   Bar,
@@ -31,17 +31,17 @@ function AdminDashboard() {
         };
 
         const users = await axios.get(
-          "http://localhost:5000/api/users",
+          "/api/users",
           config,
         );
 
         const products = await axios.get(
-          "http://localhost:5000/api/products",
+          "/api/products",
           config,
         );
 
         const orders = await axios.get(
-          "http://localhost:5000/api/orders",
+          "/api/orders",
           config,
         );
 

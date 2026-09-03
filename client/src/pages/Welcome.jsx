@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function Welcome() {
@@ -11,7 +11,7 @@ function Welcome() {
 
   const handleContinue = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/users/${userId}`, { name });
+      await axios.put(`/api/users/${userId}`, { name });
 
       navigate("/");
     } catch (error) {

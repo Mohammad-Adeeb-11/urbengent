@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 
 function Profile() {
   const [user, setUser] = useState(null);
@@ -15,10 +15,7 @@ function Profile() {
         },
       };
 
-      const { data } = await axios.get(
-        "http://localhost:5000/api/users/profile",
-        config,
-      );
+      const { data } = await axios.get("/api/users/profile", config);
 
       setUser(data);
       setName(data.name);
@@ -39,7 +36,7 @@ function Profile() {
     };
 
     const { data } = await axios.put(
-      `http://localhost:5000/api/users/${user._id}`,
+      `/api/users/${user._id}`,
       { name },
       config,
     );

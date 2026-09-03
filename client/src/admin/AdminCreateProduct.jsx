@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { ImagePlus, LoaderCircle, Plus, Save, UploadCloud } from "lucide-react";
 
 const initialForm = {
@@ -37,7 +37,7 @@ function AdminCreateProduct() {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/upload",
+        "/api/upload",
         formData,
         { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );
@@ -61,7 +61,7 @@ function AdminCreateProduct() {
     setSaving(true);
     setMessage("");
     try {
-      await axios.post("http://localhost:5000/api/products", form, {
+      await axios.post("/api/products", form, {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       });
       setForm(initialForm);

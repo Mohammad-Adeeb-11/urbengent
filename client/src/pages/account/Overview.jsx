@@ -1,5 +1,5 @@
 import { createElement, useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios";
 import { ArrowRight, Heart, MapPin, Package, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -18,9 +18,9 @@ function Overview() {
       try {
         const config = { headers: { Authorization: `Bearer ${token}` } };
         const [orders, wishlist, addresses] = await Promise.all([
-          axios.get("http://localhost:5000/api/orders/mine", config),
-          axios.get("http://localhost:5000/api/wishlist", config),
-          axios.get("http://localhost:5000/api/users/addresses", config),
+          axios.get("/api/orders/mine", config),
+          axios.get("/api/wishlist", config),
+          axios.get("/api/users/addresses", config),
         ]);
         setSummary({
           orders: orders.data.length,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 
 function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -15,7 +15,7 @@ function AdminUsers() {
       };
 
       const { data } = await axios.get(
-        "http://localhost:5000/api/users",
+        "/api/users",
         config,
       );
 
@@ -33,7 +33,7 @@ function AdminUsers() {
     };
 
     if (window.confirm("Delete this user?")) {
-      await axios.delete(`http://localhost:5000/api/users/${id}`, config);
+      await axios.delete(`/api/users/${id}`, config);
 
       setUsers(users.filter((user) => user._id !== id));
     }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { ClipboardList, LoaderCircle } from "lucide-react";
 
 const statuses = ["Placed", "Processing", "Shipped", "Delivered", "Cancelled"];
@@ -14,7 +14,7 @@ function AdminOrders() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5000/api/orders", {
+        const { data } = await axios.get("/api/orders", {
           headers,
         });
         setOrders(data);
@@ -28,7 +28,7 @@ function AdminOrders() {
     setSavingId(id);
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/orders/${id}/status`,
+        `/api/orders/${id}/status`,
         { status },
         { headers },
       );

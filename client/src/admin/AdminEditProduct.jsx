@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { useParams, useNavigate } from "react-router-dom";
 
 function AdminEditProduct() {
@@ -18,9 +18,7 @@ function AdminEditProduct() {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const { data } = await axios.get(
-        `http://localhost:5000/api/products/${id}`,
-      );
+      const { data } = await axios.get(`/api/products/${id}`);
 
       setName(data.name);
       setPrice(data.price);
@@ -42,7 +40,7 @@ function AdminEditProduct() {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/upload",
+        "/api/upload",
         formData,
         { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );
@@ -65,7 +63,7 @@ function AdminEditProduct() {
     };
 
     await axios.put(
-      `http://localhost:5000/api/products/${id}`,
+      `/api/products/${id}`,
       {
         name,
         price,

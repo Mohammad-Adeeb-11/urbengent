@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { Link } from "react-router-dom";
 import { Edit3, PackageOpen, Plus, Search, Trash2 } from "lucide-react";
 
@@ -15,7 +15,7 @@ function AdminProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5000/api/products");
+        const { data } = await axios.get("/api/products");
         setProducts(data);
       } finally {
         setLoading(false);
@@ -47,7 +47,7 @@ function AdminProducts() {
 
     setDeletingId(id);
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`, {
+      await axios.delete(`/api/products/${id}`, {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       });
       setProducts((currentProducts) =>

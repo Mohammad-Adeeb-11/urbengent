@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios";
 import {
   Camera,
   Check,
@@ -23,10 +23,9 @@ function Profile() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data } = await axios.get(
-        "http://localhost:5000/api/users/profile",
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      const { data } = await axios.get("/api/users/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setUser(data);
       setName(data.name || "");
       setAvatar(data.avatar || "");
@@ -43,7 +42,7 @@ function Profile() {
     formData.append("image", file);
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/upload",
+        "/api/upload",
         formData,
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -61,7 +60,7 @@ function Profile() {
     setMessage("");
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/users/${user._id}`,
+        `/api/users/${user._id}`,
         { name: name.trim(), avatar },
         { headers: { Authorization: `Bearer ${token}` } },
       );

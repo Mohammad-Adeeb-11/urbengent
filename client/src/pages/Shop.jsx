@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
@@ -19,7 +19,7 @@ function Shop() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get("http://localhost:5000/api/products", {
+        const { data } = await axios.get("/api/products", {
           params: { search: searchQuery, category, price },
         });
         setProducts(data);
