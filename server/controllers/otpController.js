@@ -11,36 +11,43 @@ const generateToken = (id) => {
 
 // SEND OTP
 export const sendOtp = async (req, res) => {
-  const { email } = req.body;
+  try {
+    const { email } = req.body;
 
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  await Otp.deleteMany({ email });
+    await Otp.deleteMany({ email });
 
-  await Otp.create({
-    email,
-    otp,
-    expiresAt: new Date(Date.now() + 5 * 60 * 1000),
-  });
+    await Otp.create({
+      email,
+      otp,
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    });
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST || "smtp.gmail.com",
+      port: Number(process.env.EMAIL_PORT || 587),
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: "Your UrbanGent OTP Code",
-    text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
-  });
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Your UrbanGent OTP Code",
+      text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
+    });
 
-  res.json({ message: "OTP sent successfully" });
+    return res.json({ message: "OTP sent successfully" });
+  } catch (error) {
+    console.error("OTP email send failed:", error);
+    return res.status(500).json({
+      message: "Failed to send OTP email. Please try again later.",
+    });
+  }
 };
 
 // VERIFY OTP
