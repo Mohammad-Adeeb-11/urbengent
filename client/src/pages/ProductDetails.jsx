@@ -25,7 +25,8 @@ function ProductDetails() {
   const addToCartHandler = async () => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-    if (!userInfo) {
+    if (!userInfo?.token) {
+      localStorage.removeItem("userInfo");
       navigate("/login");
       return;
     }
@@ -61,7 +62,8 @@ function ProductDetails() {
   const submitReview = async () => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-    if (!userInfo) {
+    if (!userInfo?.token) {
+      localStorage.removeItem("userInfo");
       navigate("/login");
       return;
     }

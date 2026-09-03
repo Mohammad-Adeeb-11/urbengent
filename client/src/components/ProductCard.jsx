@@ -9,7 +9,8 @@ function ProductCard({ product }) {
   const addToWishlist = async (productId) => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-    if (!userInfo) {
+    if (!userInfo?.token) {
+      localStorage.removeItem("userInfo");
       alert("Please login first");
       return;
     }

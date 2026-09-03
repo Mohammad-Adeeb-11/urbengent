@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -34,13 +39,25 @@ import AdminUsers from "./admin/AdminUsers";
 function App() {
   return (
     <Router>
-      <div className="bg-white min-h-screen flex flex-col">
-        {/* Top strip */}
-        <div className="bg-[#2E4A7D] text-white text-sm text-center py-2">
-          Free Shipping on Orders Above ₹1999
-        </div>
+      <AppShell />
+    </Router>
+  );
+}
 
-        <Navbar />
+function AppShell() {
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith("/admin");
+
+  return (
+    <div className="bg-white min-h-screen flex flex-col">
+        {/* Top strip */}
+        {!isAdminPage && (
+          <div className="bg-[#2E4A7D] text-white text-sm text-center py-2">
+            Free Shipping on Orders Above ₹1999
+          </div>
+        )}
+
+        {!isAdminPage && <Navbar />}
 
         <div className="flex-grow">
           <Routes>
@@ -123,9 +140,8 @@ function App() {
           </Routes>
         </div>
 
-        <Footer />
+        {!isAdminPage && <Footer />}
       </div>
-    </Router>
   );
 }
 

@@ -1,45 +1,58 @@
-import { Link } from "react-router-dom";
-import { FiBox, FiUsers, FiBarChart2, FiPlus } from "react-icons/fi";
+import { NavLink } from "react-router-dom";
+import { createElement } from "react";
+import { BarChart3, Box, Plus, Users } from "lucide-react";
 
-function AdminSidebar() {
+function AdminSidebar({ closeSidebar, mobile = false }) {
+  const links = [
+    { to: "/admin", label: "Overview", icon: BarChart3, end: true },
+    { to: "/admin/products", label: "Products", icon: Box },
+    { to: "/admin/create-product", label: "Add product", icon: Plus },
+    { to: "/admin/users", label: "Users", icon: Users },
+  ];
+
   return (
-    <div className="w-64 bg-[#2E4A7D] text-white p-6">
-      <h2 className="text-2xl font-semibold mb-10">UrbanGent Admin</h2>
-
-      <div className="space-y-6">
-        <Link
-          to="/admin"
-          className="flex items-center gap-3 hover:text-gray-300"
-        >
-          <FiBarChart2 />
-          Dashboard
-        </Link>
-
-        <Link
-          to="/admin/products"
-          className="flex items-center gap-3 hover:text-gray-300"
-        >
-          <FiBox />
-          Products
-        </Link>
-
-        <Link
-          to="/admin/create-product"
-          className="flex items-center gap-3 hover:text-gray-300"
-        >
-          <FiPlus />
-          Add Product
-        </Link>
-
-        <Link
-          to="/admin/users"
-          className="flex items-center gap-3 hover:text-gray-300"
-        >
-          <FiUsers />
-          Users
-        </Link>
+    <aside
+      className={`${
+        mobile
+          ? "flex max-h-[calc(100vh-5rem)] w-72 flex-col overflow-y-auto"
+          : "fixed inset-y-0 left-0 flex w-72 flex-col"
+      } bg-[#16283f] px-5 py-7 text-white`}
+    >
+      <div className="border-b border-white/10 px-3 pb-7">
+        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#e9b872]">
+          UrbanGent
+        </p>
+        <h2 className="mt-2 text-2xl font-semibold">Admin workspace</h2>
       </div>
-    </div>
+
+      <nav className="mt-8 space-y-2">
+        <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+          Manage
+        </p>
+        {links.map(({ to, label, icon: Icon, end }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={end}
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition ${
+                isActive
+                  ? "bg-[#e9b872] text-[#16283f] shadow-lg shadow-black/10"
+                  : "text-slate-300 hover:bg-white/10 hover:text-white"
+              }`
+            }
+          >
+            {createElement(Icon, { size: 18, strokeWidth: 1.8 })}
+            {label}
+          </NavLink>
+        ))}
+      </nav>
+
+      <div className="mt-auto border-t border-white/10 px-3 pt-6 text-xs leading-5 text-slate-400">
+        Keep your catalog sharp and your customers close.
+      </div>
+    </aside>
   );
 }
 

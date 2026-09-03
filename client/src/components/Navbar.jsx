@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaSearch } from "react-icons/fa";
@@ -10,7 +10,6 @@ import { GiTrousers } from "react-icons/gi";
 import { MdOutlineNightlight } from "react-icons/md";
 
 function Navbar() {
-  const [user, setUser] = useState(null);
   const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [search, setSearch] = useState("");
@@ -18,13 +17,13 @@ function Navbar() {
   const [mobileSearch, setMobileSearch] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const user = JSON.parse(localStorage.getItem("userInfo"));
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-    if (userInfo) {
-      setUser(userInfo);
-
+    if (userInfo?.token) {
       const config = {
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
@@ -58,11 +57,10 @@ function Navbar() {
 
       fetchData();
     }
-  }, []);
+  }, [location.pathname]);
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
-    setUser(null);
     navigate("/");
   };
 
@@ -154,6 +152,24 @@ function Navbar() {
               </span>
             )}
           </Link>
+
+          {user ? (
+            <button
+              onClick={logoutHandler}
+              title="Log out"
+              className="hidden items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:border-red-200 hover:text-red-500 sm:flex"
+            >
+              <FiLogOut />
+              Log out
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="hidden rounded-md bg-[#2E4A7D] px-4 py-2 text-sm font-semibold text-white hover:bg-[#243B55] sm:block"
+            >
+              Log in
+            </Link>
+          )}
 
           {/* HAMBURGER */}
           <button
@@ -281,7 +297,7 @@ function Navbar() {
 
           <hr className="my-4" />
 
-          {user && (
+          {user ? (
             <button
               onClick={logoutHandler}
               className="flex items-center gap-4 px-6 py-3 hover:bg-gray-100 text-red-500"
@@ -289,6 +305,14 @@ function Navbar() {
               <FiLogOut size={18} />
               Logout
             </button>
+          ) : (
+            <Link
+              to="/login"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-4 px-6 py-3 font-semibold text-[#2E4A7D] hover:bg-gray-100"
+            >
+              Log in
+            </Link>
           )}
         </div>
       </div>

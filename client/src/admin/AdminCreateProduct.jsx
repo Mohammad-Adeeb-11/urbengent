@@ -1,195 +1,87 @@
 import { useState } from "react";
 import axios from "axios";
+import { ImagePlus, LoaderCircle, Plus, Save, UploadCloud } from "lucide-react";
+
+const initialForm = { name: "", price: "", oldPrice: "", description: "", image: "", category: "" };
 
 function AdminCreateProduct() {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [oldPrice, setOldPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
-  const [category, setCategory] = useState("");
+  const [form, setForm] = useState(initialForm);
   const [uploading, setUploading] = useState(false);
-
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-  const uploadImageHandler = async (e) => {
-    const file = e.target.files[0];
+  const updateField = (event) => {
+    setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
+    setMessage("");
+  };
 
+  const uploadImageHandler = async (event) => {
+    const file = event.target.files[0];
     if (!file) return;
 
     const formData = new FormData();
     formData.append("image", file);
-
     setUploading(true);
+    setMessage("");
 
     try {
-      const { data } = await axios.post(
-        "http://localhost:5000/api/upload",
-        formData,
-      );
-
-      setImage(data.imageUrl);
-      setUploading(false);
-    } catch (error) {
-      console.log(error);
+      const { data } = await axios.post("http://localhost:5000/api/upload", formData);
+      setForm((current) => ({ ...current, image: data.imageUrl }));
+    } catch {
+      setMessage("Image upload failed. Please try again.");
+    } finally {
       setUploading(false);
     }
   };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    if (!form.name || !form.category || !form.price || !form.image) {
+      setMessage("Add a name, category, price, and product image before saving.");
+      return;
+    }
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-
-    await axios.post(
-      "http://localhost:5000/api/products",
-      { name, price, oldPrice, image, description, category },
-      config,
-    );
-
-    alert("Product Created!");
+    setSaving(true);
+    setMessage("");
+    try {
+      await axios.post("http://localhost:5000/api/products", form, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      setForm(initialForm);
+      setMessage("Product created successfully.");
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Could not create product. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-100 p-3 sm:p-5 md:p-8">
-      <div className="w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8">
-        {/* Heading */}
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#2E4A7D]">
-            Create Product
-          </h1>
-
-          <p className="text-gray-500 mt-1 text-sm sm:text-base">
-            Add new products to your store
-          </p>
-        </div>
-
-        {/* Form */}
-        <form onSubmit={submitHandler} className="space-y-5">
-          {/* Product Name */}
-          <div>
-            <label className="block mb-2 font-medium text-sm sm:text-base">
-              Product Name
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter product name"
-              className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-[#2E4A7D] text-sm sm:text-base"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+    <main className="mx-auto max-w-6xl space-y-6">
+      <header><p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#b77a2e]">Catalog / New item</p><h1 className="mt-2 text-3xl font-semibold text-[#16283f]">Create product</h1><p className="mt-2 text-sm text-slate-500">Bring a new piece into your UrbanGent collection.</p></header>
+      <form onSubmit={submitHandler} className="grid gap-5 xl:grid-cols-[1fr_360px]">
+        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+          <div className="mb-7 flex items-center gap-3 border-b border-slate-100 pb-5"><span className="rounded-lg bg-[#fbf3e5] p-2 text-[#b77a2e]"><Plus size={18} /></span><div><h2 className="font-semibold text-[#16283f]">Product details</h2><p className="text-xs text-slate-400">Give customers the information they need.</p></div></div>
+          <div className="space-y-5">
+            <Field label="Product name" required><input name="name" value={form.name} onChange={updateField} placeholder="e.g. Essential Oxford Shirt" className="input-style" /></Field>
+            <Field label="Category" required><select name="category" value={form.category} onChange={updateField} className="input-style"><option value="">Select a category</option><option>Shirts</option><option>Pants</option><option>T-Shirts</option><option>Nightwear</option></select></Field>
+            <div className="grid gap-5 sm:grid-cols-2"><Field label="Selling price" required><div className="relative"><span className="absolute left-4 top-3.5 text-sm text-slate-400">₹</span><input name="price" type="number" min="0" value={form.price} onChange={updateField} placeholder="0" className="input-style pl-8" /></div></Field><Field label="Compare-at price"><div className="relative"><span className="absolute left-4 top-3.5 text-sm text-slate-400">₹</span><input name="oldPrice" type="number" min="0" value={form.oldPrice} onChange={updateField} placeholder="0" className="input-style pl-8" /></div></Field></div>
+            <Field label="Description"><textarea name="description" rows="7" value={form.description} onChange={updateField} placeholder="Describe the fit, material, and details..." className="input-style resize-none" /></Field>
           </div>
+        </section>
 
-          {/* Category */}
-          <div>
-            <label className="block mb-2 font-medium text-sm sm:text-base">
-              Category
-            </label>
-
-            <select
-              className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-[#2E4A7D] text-sm sm:text-base"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="">Select Category</option>
-              <option value="Shirts">Shirts</option>
-              <option value="Pants">Pants</option>
-              <option value="T-Shirts">T-Shirts</option>
-              <option value="Nightwear">Nightwear</option>
-            </select>
-          </div>
-
-          {/* Price Fields */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-2 font-medium text-sm sm:text-base">
-                Price
-              </label>
-
-              <input
-                type="number"
-                placeholder="₹ Enter price"
-                className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-[#2E4A7D] text-sm sm:text-base"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2 font-medium text-sm sm:text-base">
-                Old Price
-              </label>
-
-              <input
-                type="number"
-                placeholder="₹ Old price"
-                className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-[#2E4A7D] text-sm sm:text-base"
-                value={oldPrice}
-                onChange={(e) => setOldPrice(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className="block mb-2 font-medium text-sm sm:text-base">
-              Description
-            </label>
-
-            <textarea
-              rows="5"
-              placeholder="Write product description..."
-              className="w-full border border-gray-300 p-3 rounded-xl outline-none focus:ring-2 focus:ring-[#2E4A7D] resize-none text-sm sm:text-base"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-
-          {/* Upload Image */}
-          <div>
-            <label className="block mb-2 font-medium text-sm sm:text-base">
-              Upload Product Image
-            </label>
-
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 sm:p-6 text-center">
-              <input
-                type="file"
-                onChange={uploadImageHandler}
-                className="w-full text-sm"
-              />
-
-              {uploading && (
-                <p className="mt-3 text-blue-600 font-medium">Uploading...</p>
-              )}
-
-              {image && (
-                <div className="mt-5 flex justify-center">
-                  <img
-                    src={image}
-                    alt="preview"
-                    className="w-full max-w-xs h-52 object-cover rounded-xl shadow-md"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Button */}
-          <button
-            type="submit"
-            className="w-full bg-[#2E4A7D] hover:bg-[#243b63] transition-all duration-300 text-white py-3 rounded-xl font-semibold text-sm sm:text-base"
-          >
-            Create Product
-          </button>
-        </form>
-      </div>
-    </div>
+        <aside className="space-y-5">
+          <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><div className="mb-5 flex items-center gap-3"><span className="rounded-lg bg-[#eaf5f3] p-2 text-[#3f7774]"><ImagePlus size={18} /></span><div><h2 className="font-semibold text-[#16283f]">Product image</h2><p className="text-xs text-slate-400">Use a clear, high-quality image.</p></div></div><label className="group flex min-h-64 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 text-center hover:border-[#b77a2e] hover:bg-[#fffaf2]">{form.image ? <img src={form.image} alt="Product preview" className="h-64 w-full object-cover" /> : <><UploadCloud size={30} className="text-slate-400 group-hover:text-[#b77a2e]" /><p className="mt-3 text-sm font-semibold text-slate-600">Upload an image</p><p className="mt-1 text-xs text-slate-400">PNG, JPG up to 10MB</p></>}<input type="file" accept="image/*" onChange={uploadImageHandler} className="hidden" /></label>{uploading && <p className="mt-3 flex items-center gap-2 text-xs font-medium text-[#b77a2e]"><LoaderCircle size={14} className="animate-spin" /> Uploading image...</p>}</section>
+          <section className="rounded-xl border border-slate-200 bg-[#16283f] p-5 text-white shadow-sm sm:p-6"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#e9b872]">Ready to publish?</p><p className="mt-2 text-sm leading-6 text-slate-300">Review the details and image, then add this product to your live catalog.</p>{message && <p className={`mt-4 rounded-lg px-3 py-2 text-xs ${message.includes("successfully") ? "bg-emerald-400/15 text-emerald-200" : "bg-red-400/15 text-red-200"}`}>{message}</p>}<button disabled={saving || uploading} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#e9b872] px-4 py-3 text-sm font-semibold text-[#16283f] hover:bg-[#f3ca8d] disabled:cursor-not-allowed disabled:opacity-60">{saving ? <><LoaderCircle size={17} className="animate-spin" /> Saving...</> : <><Save size={17} /> Create product</>}</button></section>
+        </aside>
+      </form>
+    </main>
   );
+}
+
+function Field({ label, required, children }) {
+  return <label className="block"><span className="mb-2 block text-sm font-semibold text-[#16283f]">{label}{required && <span className="ml-1 text-[#b77a2e]">*</span>}</span>{children}</label>;
 }
 
 export default AdminCreateProduct;
