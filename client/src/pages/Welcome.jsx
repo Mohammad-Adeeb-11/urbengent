@@ -8,14 +8,23 @@ function Welcome() {
   const location = useLocation();
 
   const userId = location.state?.userId;
+  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "null");
 
   const handleContinue = async () => {
     try {
-      await axios.put(`/api/users/${userId}`, { name });
+      await axios.put(
+        `/api/users/${userId}`,
+        { name },
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo?.token}`,
+          },
+        },
+      );
 
       navigate("/");
     } catch (error) {
-      alert("Something went wrong");
+      alert(error.response?.data?.message || "Something went wrong");
     }
   };
 
