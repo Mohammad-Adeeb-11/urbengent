@@ -15,7 +15,9 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.put("/:id", protect, async (req, res) => {
   if (req.user._id.toString() !== req.params.id && !req.user.isAdmin) {
-    return res.status(403).json({ message: "You can only update your own profile" });
+    return res
+      .status(403)
+      .json({ message: "You can only update your own profile" });
   }
 
   const user = await User.findById(req.params.id);
@@ -35,10 +37,24 @@ router.get("/profile", protect, async (req, res) => {
 router.get("/addresses", protect, (req, res) => res.json(req.user.addresses));
 router.post("/addresses", protect, async (req, res) => {
   const { label, fullName, phone, address, city, state, postalCode } = req.body;
-  if (![fullName, phone, address, city, state, postalCode].every((value) => String(value || "").trim())) {
-    return res.status(400).json({ message: "Please complete all address fields" });
+  if (
+    ![fullName, phone, address, city, state, postalCode].every((value) =>
+      String(value || "").trim(),
+    )
+  ) {
+    return res
+      .status(400)
+      .json({ message: "Please complete all address fields" });
   }
-  req.user.addresses.push({ label, fullName, phone, address, city, state, postalCode });
+  req.user.addresses.push({
+    label,
+    fullName,
+    phone,
+    address,
+    city,
+    state,
+    postalCode,
+  });
   await req.user.save();
   res.status(201).json(req.user.addresses.at(-1));
 });
