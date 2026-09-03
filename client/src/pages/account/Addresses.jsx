@@ -33,10 +33,7 @@ function Addresses() {
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const { data } = await axios.get(
-          "/api/users/addresses",
-          { headers },
-        );
+        const { data } = await axios.get("/api/users/addresses", { headers });
         setAddresses(data);
       } finally {
         setLoading(false);

@@ -18,10 +18,9 @@ function Orders() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const { data } = await axios.get(
-          "/api/orders/mine",
-          { headers: { Authorization: `Bearer ${userInfo?.token}` } },
-        );
+        const { data } = await axios.get("/api/orders/mine", {
+          headers: { Authorization: `Bearer ${userInfo?.token}` },
+        });
         setOrders(data);
       } finally {
         setLoading(false);

@@ -39,11 +39,9 @@ function AdminEditProduct() {
     setUploading(true);
 
     try {
-      const { data } = await axios.post(
-        "/api/upload",
-        formData,
-        { headers: { Authorization: `Bearer ${userInfo.token}` } },
-      );
+      const { data } = await axios.post("/api/upload", formData, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
 
       setImage(data.imageUrl);
       setUploading(false);

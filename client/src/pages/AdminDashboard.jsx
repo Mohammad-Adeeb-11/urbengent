@@ -30,20 +30,11 @@ function AdminDashboard() {
           },
         };
 
-        const users = await axios.get(
-          "/api/users",
-          config,
-        );
+        const users = await axios.get("/api/users", config);
 
-        const products = await axios.get(
-          "/api/products",
-          config,
-        );
+        const products = await axios.get("/api/products", config);
 
-        const orders = await axios.get(
-          "/api/orders",
-          config,
-        );
+        const orders = await axios.get("/api/orders", config);
 
         setStats({
           users: users.data.length,

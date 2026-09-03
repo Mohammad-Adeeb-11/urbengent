@@ -15,7 +15,10 @@ dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT) || 5000;
-const clientUrls = (process.env.CLIENT_URL || "http://localhost:5173,https://urbengent.onrender.com")
+const clientUrls = (
+  process.env.CLIENT_URL ||
+  "http://localhost:5173,https://urbengent.onrender.com"
+)
   .split(",")
   .map((url) => url.trim())
   .filter(Boolean);

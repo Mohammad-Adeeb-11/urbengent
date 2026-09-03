@@ -41,11 +41,9 @@ function Profile() {
     const formData = new FormData();
     formData.append("image", file);
     try {
-      const { data } = await axios.post(
-        "/api/upload",
-        formData,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      const { data } = await axios.post("/api/upload", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setAvatar(data.imageUrl);
     } catch {
       setMessage("Could not upload your profile picture.");

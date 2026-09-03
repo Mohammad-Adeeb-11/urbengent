@@ -48,11 +48,7 @@ function Cart() {
   const updateQuantity = async (productId, quantity) => {
     setUpdating(productId);
     try {
-      await axios.put(
-        "/api/cart/update",
-        { productId, quantity },
-        { headers },
-      );
+      await axios.put("/api/cart/update", { productId, quantity }, { headers });
       await fetchCart();
     } finally {
       setUpdating("");

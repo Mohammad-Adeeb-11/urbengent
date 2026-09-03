@@ -11,10 +11,10 @@ function Login() {
     e.preventDefault();
 
     try {
-      const { data } = await axios.post(
-        "/api/users/register",
-        { email, password },
-      );
+      const { data } = await axios.post("/api/users/register", {
+        email,
+        password,
+      });
 
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/");

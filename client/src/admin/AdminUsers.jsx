@@ -14,10 +14,7 @@ function AdminUsers() {
         },
       };
 
-      const { data } = await axios.get(
-        "/api/users",
-        config,
-      );
+      const { data } = await axios.get("/api/users", config);
 
       setUsers(data);
     };

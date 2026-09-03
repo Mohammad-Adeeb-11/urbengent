@@ -36,11 +36,9 @@ function AdminCreateProduct() {
     setMessage("");
 
     try {
-      const { data } = await axios.post(
-        "/api/upload",
-        formData,
-        { headers: { Authorization: `Bearer ${userInfo.token}` } },
-      );
+      const { data } = await axios.post("/api/upload", formData, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
       setForm((current) => ({ ...current, image: data.imageUrl }));
     } catch {
       setMessage("Image upload failed. Please try again.");
